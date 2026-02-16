@@ -1,28 +1,49 @@
 from sqlalchemy.orm import Session
-from . import models
-from datetime import datetime
+from sqlalchemy import and_
+from . import models, schemas
 
 
-# check to see if there is any overlapping schedules 
-def is_overlapping(db: Session, start_time: datetime, end_time: datetime):
-    return db.query(models.Appointment).filter(
-        models.Appointment.start_time < end_time,
-        models.Appointment.end_time > start_time
-    ).first() is not None
+def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
 
-# Function to create the appointments 
-def create_appointment(db: Session, appointment):
-    if is_overlapping(db, appointment.start_time, appointment.end_time):
-        raise Exception("Appointment overlaps with an existing booking")
-    
-    # feel free to add more entries, there are just what I can think of ATM
+    overlapping_appointment = db.query(models.Appointment).filter(
+        and_(
+            models.Appointment.provider_id == appointment.provider_id,
+            models.Appointment.start_time < appointment.end_time,
+            models.Appointment.end_time > appointment.start_time
+        )
+    ).first()
+
+    if overlapping_appointment:
+        return None
+
     db_appointment = models.Appointment(
+        provider_id=appointment.provider_id,
         client_name=appointment.client_name,
         start_time=appointment.start_time,
-        end_time=appointment.end_time
+        end_time=appointment.end_time,
+        notes=appointment.notes,
     )
 
     db.add(db_appointment)
     db.commit()
     db.refresh(db_appointment)
     return db_appointment
+
+def get_appointments_by_provider(db: Session, provider_id: int):
+    return db.query(models.Appointment).filter(
+        models.Appointment.provider_id == provider_id
+    ).order_by(models.Appointment.start_time).all()
+
+
+def delete_appointment(db: Session, appointment_id: int, provider_id: int):
+    appointment = db.query(models.Appointment).filter(
+        models.Appointment.id == appointment_id,
+        models.Appointment.provider_id == provider_id
+    ).first()
+
+    if not appointment:
+        return False
+
+    db.delete(appointment)
+    db.commit()
+    return True

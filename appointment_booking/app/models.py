@@ -1,15 +1,12 @@
-from datetime import datetime
-from .database import db
+from sqlalchemy import Column, Integer, String, DateTime, Text
+from .database import Base
 
-class Appointment(db.Model):
+class Appointment(Base):
     __tablename__ = "appointments"
 
-    id = db.Column(db.Integer, primary_key=True)
-    client_name = db.Column(db.String(100), nullable=False)
-    service_type = db.Column(db.String(100), nullable=False)
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return f"<Appointment {self.client_name} {self.start_time}>"
+    id = Column(Integer, primary_key=True, index=True)
+    provider_id = Column(Integer, nullable=False, index=True)
+    client_name = Column(String(100), nullable=False)
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=False)
+    notes = Column(Text, nullable=True)

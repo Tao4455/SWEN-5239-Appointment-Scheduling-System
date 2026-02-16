@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Provider {{ provider_id }} - Appointments</h1>
+
+{% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+{% endif %}
+
+<h2>Create Appointment</h2>
+
+<form method="post" action="/ui/appointments">
+    <input type="hidden" name="provider_id" value="{{ provider_id }}">
+
+    <label>Client Name</label>
+    <input type="text" name="client_name" required>
+
+    <label>Start Time</label>
+    <input type="datetime-local" name="start_time" required>
+
+    <label>End Time</label>
+    <input type="datetime-local" name="end_time" required>
+
+    <label>Notes</label>
+    <input type="text" name="notes">
+
+    <button type="submit">Create Appointment</button>
+</form>
+
+<h2>Scheduled Appointments</h2>
+
+{% for appt in appointments %}
+    <div class="appointment">
+        <strong>{{ appt.client_name }}</strong><br>
+        {{ appt.start_time }} → {{ appt.end_time }}
+
+        {% if appt.notes %}
+            <br><em>{{ appt.notes }}</em>
+        {% endif %}
+
+        <form method="post" action="/ui/delete/{{ appt.id }}">
+            <input type="hidden" name="provider_id" value="{{ provider_id }}">
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+{% else %}
+    <p>No appointments yet.</p>
+{% endfor %}
+{% endblock %}

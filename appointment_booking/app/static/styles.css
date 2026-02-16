@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 40px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+form input, form button {
+    padding: 8px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1e4ed8;
+}
+
+.appointment {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+
+button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 6px 10px;
+}
+
+button:hover {
+    background-color: #1e4ed8;
+}
+
+form button {
+    background-color: #dc2626;
+}
+
+form button:hover {
+    background-color: #b91c1c;
+}
