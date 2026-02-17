@@ -33,7 +33,6 @@ app.mount(
 )
 
 
-
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -144,6 +143,4 @@ def delete_appointment_ui(
     )
 
 
-@app.get("/debug-routes")
-def debug_routes():
-    return [route.path for route in app.routes]
+

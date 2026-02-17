@@ -1,8 +1,13 @@
+
+#Setting up the Database layer
+
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "sqlite:///./appointments.db"
+DATABASE_URL = "sqlite:///./appointments.db"  # setting SQLite DB
 
+#Set up my session factory and ORM base class 
 engine = create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False}
 )

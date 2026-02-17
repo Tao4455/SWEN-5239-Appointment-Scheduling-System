@@ -3,6 +3,8 @@ from sqlalchemy import and_
 from . import models, schemas
 
 
+# This is my logic layer that handles DB logic and routes to HTTP
+
 def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
 
     overlapping_appointment = db.query(models.Appointment).filter(
