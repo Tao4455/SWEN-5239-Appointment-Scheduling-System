@@ -1,51 +1,134 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Provider {{ provider_id }} - Appointments</h1>
 
-{% if error %}
-    <div class="error">
-        {{ error }}
-    </div>
-{% endif %}
+<div class="section">
 
-<h2>Create Appointment</h2>
+    <h2>Welcome! When Should We Meet</h2>
 
-<form method="post" action="/ui/appointments">
-    <input type="hidden" name="provider_id" value="{{ provider_id }}">
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
 
-    <label>Client Name</label>
-    <input type="text" name="client_name" required>
+    <form method="post" action="/ui/appointments">
+        <input type="hidden" name="provider_id" value="{{ provider_id }}">
 
-    <label>Start Time</label>
-    <input type="datetime-local" name="start_time" required>
+        <div class="form-grid">
+            <div>
+                <label>Client Name</label>
+                <input type="text" name="client_name" required>
+            </div>
 
-    <label>End Time</label>
-    <input type="datetime-local" name="end_time" required>
+            <div>
+                <label>Start Time</label>
+                <input type="datetime-local" name="start_time" required>
+            </div>
 
-    <label>Notes</label>
-    <input type="text" name="notes">
+            <div>
+                <label>End Time</label>
+                <input type="datetime-local" name="end_time" required>
+            </div>
 
-    <button type="submit">Create Appointment</button>
-</form>
+            <div style="grid-column: span 2;">
+                <label>Notes</label>
+                <textarea name="notes" rows="3" placeholder="Optional notes..."></textarea>
+            </div>
+        </div>
 
-<h2>Scheduled Appointments</h2>
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn-primary">
+                Create Appointment
+            </button>
+        </div>
+    </form>
 
-{% for appt in appointments %}
-    <div class="appointment">
-        <strong>{{ appt.client_name }}</strong><br>
-        {{ appt.start_time }} → {{ appt.end_time }}
+</div>
 
-        {% if appt.notes %}
-            <br><em>{{ appt.notes }}</em>
-        {% endif %}
+<hr style="margin: 40px 0; border: none; border-top: 1px solid #e5e7eb;">
 
-        <form method="post" action="/ui/delete/{{ appt.id }}">
-            <input type="hidden" name="provider_id" value="{{ provider_id }}">
-            <button type="submit">Delete</button>
-        </form>
-    </div>
-{% else %}
-    <p>No appointments yet.</p>
-{% endfor %}
+<div class="section">
+
+    <h2>Scheduled Appointments</h2>
+
+    {% if appointments|length == 0 %}
+        <p style="color: #6b7280; margin-top: 20px;">
+            No appointments scheduled yet.
+        </p>
+    {% endif %}
+
+    {% for appt in appointments %}
+        <div class="appointment-card">
+
+            <div class="appointment-info">
+
+                <div style="font-size: 16px; font-weight: 600;">
+                    {{ appt.client_name }}
+                </div>
+
+                <div style="margin-top: 5px; font-size: 14px; color: #374151;">
+                    {{ appt.start_time.strftime("%b %d, %Y %I:%M %p") }}
+                    →
+                    {{ appt.end_time.strftime("%b %d, %Y %I:%M %p") }}
+                </div>
+
+                {% if appt.notes %}
+                    <div style="margin-top: 6px; font-size: 13px; color: #6b7280;">
+                        {{ appt.notes }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <div style="text-align: right;">
+
+                <!-- Delete Button -->
+                <form method="post" action="/ui/delete/{{ appt.id }}" style="margin-bottom: 8px;">
+                    <input type="hidden" name="provider_id" value="{{ provider_id }}">
+                    <button type="submit" class="btn-danger">
+                        Delete
+                    </button>
+                </form>
+
+                <!-- Reschedule Section -->
+                <details>
+                    <summary style="cursor: pointer; font-size: 13px; color: #2563eb;">
+                        Reschedule
+                    </summary>
+
+                    <form method="post"
+                          action="/ui/reschedule/{{ appt.id }}"
+                          style="margin-top: 10px;">
+
+                        <input type="hidden" name="provider_id" value="{{ provider_id }}">
+
+                        <input type="datetime-local"
+                               name="start_time"
+                               required
+                               style="margin-bottom: 6px;">
+
+                        <input type="datetime-local"
+                               name="end_time"
+                               required
+                               style="margin-bottom: 6px;">
+
+                        <input type="text"
+                               name="notes"
+                               placeholder="Update notes (optional)"
+                               style="margin-bottom: 6px;">
+
+                        <button type="submit" class="btn-secondary">
+                            Confirm
+                        </button>
+                    </form>
+                </details>
+
+            </div>
+
+        </div>
+    {% endfor %}
+
+</div>
+
 {% endblock %}

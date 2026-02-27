@@ -18,10 +18,9 @@ from fastapi.staticfiles import StaticFiles
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Appointment Booking System")
+
+# HTML and CSS styles
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-print("BASE_DIR:", BASE_DIR)
-print("STATIC_DIR:", os.path.join(BASE_DIR, "static"))
-print("FILES IN STATIC:", os.listdir(os.path.join(BASE_DIR, "static")))
 
 
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
@@ -41,7 +40,7 @@ def get_db():
     finally:
         db.close()
 
-
+#Clients create their appointment and verify them
 @app.post("/appointments/", response_model=schemas.AppointmentResponse, status_code=201)
 def create_appointment(
     appointment: schemas.AppointmentCreate,
@@ -144,3 +143,42 @@ def delete_appointment_ui(
 
 
 
+@app.post("/ui/reschedule/{appointment_id}")
+def reschedule_appointment(
+    request: Request,
+    appointment_id: int,
+    provider_id: int = Form(...),
+    start_time: str = Form(...),
+    end_time: str = Form(...),
+    notes: str = Form(None),
+    db: Session = Depends(get_db),
+):
+    updated = crud.update_appointment(
+        db,
+        appointment_id,
+        provider_id,
+        datetime.fromisoformat(start_time),
+        datetime.fromisoformat(end_time),
+        notes,
+    )
+
+    if updated is None:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+
+    if updated is False:
+        appointments = crud.get_appointments_by_provider(db, provider_id)
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "appointments": appointments,
+                "provider_id": provider_id,
+                "error": "Reschedule conflicts with another appointment."
+            },
+            status_code=400
+        )
+
+    return RedirectResponse(
+        url=f"/ui/{provider_id}",
+        status_code=303
+    )

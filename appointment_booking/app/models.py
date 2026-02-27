@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from .database import Base
 
+
+# This is my database table, that consists of 6 entries, which matches my user stories
 class Appointment(Base):
     __tablename__ = "appointments"
 

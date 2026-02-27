@@ -2,6 +2,7 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional
 
+#Reuqest and resonpse schemas, which inlcude validation feature to align with my user story of appointment creation
 
 class AppointmentCreate(BaseModel):
     provider_id: int
@@ -10,6 +11,7 @@ class AppointmentCreate(BaseModel):
     end_time: datetime
     notes: Optional[str] = None
 
+    #Here is the validation to make sure clients not enter the wrong times or overlapping time
     @field_validator("end_time")
     @classmethod
     def validate_time(cls, end_time, info):
