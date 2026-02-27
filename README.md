@@ -6,7 +6,7 @@
                Type:
         	 python -m venv venv
         	 source venv/Scripts/activate
-        	Uvicorn app.main:app –reload
+        	Uvicorn app.main:app –-reload
 
       2.	Copy:     http://127.0.0.1:8000/ui/1
                 Paste it in your web browser.
