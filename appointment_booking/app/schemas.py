@@ -1,3 +1,9 @@
+
+# REQUEST & RESPONSE SCHEMAS
+# ==================================
+
+
+
 from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional
@@ -16,6 +22,8 @@ class AppointmentCreate(BaseModel):
     @classmethod
     def validate_time(cls, end_time, info):
         start_time = info.data.get("start_time")
+
+        # avoid silly mistakes like endtime is ahead of starttime
         if start_time and end_time <= start_time:
             raise ValueError("End time must be after start time")
         return end_time

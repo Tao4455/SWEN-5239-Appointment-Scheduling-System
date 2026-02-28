@@ -1,3 +1,6 @@
+
+# My FASTAPI Apllication entry point is set here
+
 import os
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -14,15 +17,15 @@ from fastapi.staticfiles import StaticFiles
 
 
 
-
+# Automatically create tables 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Appointment Booking System")
 
-# HTML and CSS styles
+# Determine project directory path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
+#Configure Jinja2 template directory  
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 app.mount(
